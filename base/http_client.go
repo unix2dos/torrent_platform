@@ -9,13 +9,17 @@ import (
 )
 
 type Client struct {
+	addr   string
 	client *http.Client
 }
 
 func NewClient() *Client {
 
-	s := &Client{}
+	addr := "172.24.120.28:26180"
 
+	s := &Client{
+		addr: addr,
+	}
 	s.client = &http.Client{
 		Timeout: time.Second * 10,
 	}

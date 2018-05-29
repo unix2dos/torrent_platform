@@ -25,7 +25,7 @@ func FileSeed(path string, client *torrent.Client) (infohash string, err error) 
 		return "", base.ErrTorrentAlreadyExist
 	}
 
-	//add torrent
+	// add torrent
 	tTorrent, err := client.AddTorrent(mi)
 	if err != nil {
 		return "", err

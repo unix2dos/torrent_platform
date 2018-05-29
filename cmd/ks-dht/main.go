@@ -12,15 +12,18 @@ import (
 	"time"
 
 	"github.com/anacrolix/dht"
+	"github.com/gin-gonic/gin"
 	envcfg "github.com/wealthworks/envflagset"
 
 	"torrent_platform/base"
 )
 
 var (
-	Version        = "dev"
-	udpAddr        = ":16181"
-	httpAddr       = ":16182"
+	Version   = "dev"
+	udpAddr   = ":16181"
+	debugAddr = ":16182"
+	dataAddr  = ":26180"
+
 	bootstrapAddrs string
 	server         *dht.Server
 	redisDB        = 0
@@ -71,7 +74,7 @@ func main() {
 	envcfg.New("ks-dht", Version)
 
 	flag.StringVar(&udpAddr, "udp-addr", udpAddr, "local UDP address")
-	flag.StringVar(&httpAddr, "http-addr", httpAddr, "dht debug info address")
+	flag.StringVar(&debugAddr, "debug-addr", debugAddr, "dht debug info address")
 	flag.StringVar(&bootstrapAddrs, "bootstrap-addrs", "", "bootstrap addrs, separate with comma")
 	flag.IntVar(&redisDB, "redis-db", 0, "redis db index")
 
@@ -80,11 +83,6 @@ func main() {
 	if bootstrapAddrs != "" {
 		base.GlobalBootstrapAddrs = strings.Split(bootstrapAddrs, ",")
 	}
-
-	//listen data
-	go func() {
-		ListenData()
-	}()
 
 	//udp server
 	conn, err := net.ListenPacket("udp4", udpAddr)
@@ -102,17 +100,22 @@ func main() {
 	}
 
 	//http debug info
-	listener, err := net.Listen("tcp", httpAddr)
-	if err != nil {
-		log.Fatal(err)
-	}
 	go func() {
-		defer listener.Close()
-		log.Printf("error serving http on envpprof listener: %s", http.Serve(listener, nil))
+		mux := http.NewServeMux()
+		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			server.WriteStatus(w)
+		})
+		http.ListenAndServe(debugAddr, mux)
 	}()
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		server.WriteStatus(w)
-	})
+
+	//listen data
+	go func() {
+		router := gin.New()
+		router.PUT("/hash", putHash)
+		router.DELETE("/hash", delHash)
+		router.GET("/hash", getHash)
+		router.Run(dataAddr)
+	}()
 
 	//load data
 	err = loadTable()

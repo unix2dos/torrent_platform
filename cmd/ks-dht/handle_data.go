@@ -6,14 +6,6 @@ import (
 	"torrent_platform/base"
 )
 
-func ListenData() {
-	router := gin.New()
-	router.PUT("/hash", putHash)
-	router.DELETE("/hash", delHash)
-	router.GET("/hash", getHash)
-	router.Run(":26181")
-}
-
 var (
 	hashSlice = make([]string, 0)
 )

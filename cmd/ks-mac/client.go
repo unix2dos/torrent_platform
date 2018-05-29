@@ -18,5 +18,6 @@ func SendHash(hash string) error {
 	if err != nil {
 		return err
 	}
-	return httpClient.DoPut("http://127.0.0.1:26181/hash", "application/json", bytes.NewBuffer(buf))
+
+	return httpClient.DoPut(httpClient.UrlFor(base.UtHash), "application/json", bytes.NewBuffer(buf))
 }

@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
-	"net"
 	"net/http"
 
 	"github.com/anacrolix/torrent"
@@ -20,7 +20,7 @@ var (
 func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	flag.StringVar(&httpAddr, "httpAddr", ":16183", "http addr")
+	flag.StringVar(&httpAddr, "httpAddr", ":16180", "http addr")
 }
 
 func main() {
@@ -42,23 +42,20 @@ func main() {
 	}
 	defer torrentClient.Close()
 
-	//listen path
+	//listen http
 	go func() {
-		ListenPath()
-	}()
+		mux := http.NewServeMux()
 
-	//http debug
-	listener, err := net.Listen("tcp", httpAddr)
-	if err != nil {
-		log.Fatal(err)
-	}
-	go func() {
-		defer listener.Close()
-		log.Printf("error serving http on envpprof listener: %s", http.Serve(listener, nil))
+		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			torrentClient.WriteStatus(w)
+		})
+
+		mux.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
+			path := r.URL.Query().Get("key")
+			fmt.Fprintf(w, "your path is, %s!\n\n%s\n", path, AddPath(path))
+		})
+		http.ListenAndServe(httpAddr, mux)
 	}()
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		torrentClient.WriteStatus(w)
-	})
 
 	select {}
 }

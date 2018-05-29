@@ -68,6 +68,9 @@ func DownloadFile() {
 
 	res := GetHash()
 	for _, hash := range res {
+
+		fmt.Println("-------------------------hash download", hash)
+
 		tTorrent, err := torrentClient.AddMagnet("magnet:?xt=urn:btih:" + hash)
 		if err != nil {
 			log.Printf("add magnet error %s\n", err)
@@ -76,7 +79,6 @@ func DownloadFile() {
 			<-tTorrent.GotInfo()
 			// tTorrent.Info().Name = ""//TODO: 暂时当前目录
 			tTorrent.DownloadAll()
-			fmt.Println("-------------------------hash download", hash)
 		}()
 	}
 }

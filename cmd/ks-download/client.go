@@ -9,6 +9,6 @@ var (
 )
 
 func GetHash() (res []string) {
-	httpClient.DoGet("http://127.0.0.1:26181/hash", &res)
+	httpClient.DoGet(httpClient.UrlFor(base.UtHash), &res)
 	return
 }

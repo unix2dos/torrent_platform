@@ -2,9 +2,7 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/anacrolix/torrent"
 
@@ -44,17 +42,7 @@ func main() {
 
 	//listen http
 	go func() {
-		mux := http.NewServeMux()
-
-		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			torrentClient.WriteStatus(w)
-		})
-
-		mux.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
-			path := r.URL.Query().Get("key")
-			fmt.Fprintf(w, "your path is, %s!\n\n%s\n", path, AddPath(path))
-		})
-		http.ListenAndServe(httpAddr, mux)
+		HandlerReceive()
 	}()
 
 	select {}

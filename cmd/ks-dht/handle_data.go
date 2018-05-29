@@ -10,8 +10,12 @@ var (
 	hashSlice = make([]string, 0)
 )
 
-//增加
-func putHash(c *gin.Context) {
+func handleGetHash(c *gin.Context) {
+
+	c.JSON(200, hashSlice)
+}
+
+func handleAddHash(c *gin.Context) {
 	var hash base.Hash
 	c.BindJSON(&hash)
 
@@ -22,16 +26,9 @@ func putHash(c *gin.Context) {
 	})
 }
 
-//删除
-func delHash(c *gin.Context) {
+func handleDelHash(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"msg": "ok",
 	})
-}
-
-//查询
-func getHash(c *gin.Context) {
-
-	c.JSON(200, hashSlice)
 }

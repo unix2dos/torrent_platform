@@ -111,9 +111,9 @@ func main() {
 	//listen data
 	go func() {
 		router := gin.New()
-		router.PUT("/hash", putHash)
-		router.DELETE("/hash", delHash)
-		router.GET("/hash", getHash)
+		router.GET("/hash", handleGetHash)
+		router.PUT("/hash", handleAddHash)
+		router.DELETE("/hash", handleDelHash)
 		router.Run(dataAddr)
 	}()
 

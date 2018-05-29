@@ -5,14 +5,13 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
 
 	"torrent_platform/base"
 )
 
-func FileSeed(path string, client *torrent.Client) (infohash string, err error) {
+func FileSeed(path string) (infohash string, err error) {
 
 	mi, err := GenerateMetaInfo(path)
 	if err != nil {
@@ -20,13 +19,13 @@ func FileSeed(path string, client *torrent.Client) (infohash string, err error) 
 	}
 
 	// check infohash is exist
-	_, new := client.AddTorrentInfoHashWithStorage(mi.HashInfoBytes(), nil)
+	_, new := torrentClient.AddTorrentInfoHashWithStorage(mi.HashInfoBytes(), nil)
 	if !new {
 		return "", base.ErrTorrentAlreadyExist
 	}
 
 	// add torrent
-	tTorrent, err := client.AddTorrent(mi)
+	tTorrent, err := torrentClient.AddTorrent(mi)
 	if err != nil {
 		return "", err
 	}
@@ -36,6 +35,19 @@ func FileSeed(path string, client *torrent.Client) (infohash string, err error) 
 		<-tTorrent.GotInfo()
 		tTorrent.DownloadAll()
 	}()
+
+	return mi.HashInfoBytes().String(), nil
+}
+
+func CancelFileSeed(path string) (infohash string, err error) {
+
+	mi, err := GenerateMetaInfo(path) //TODO: 通过其他办法获取torrent
+	if err != nil {
+		return "", err
+	}
+
+	torrent, _ := torrentClient.AddTorrentInfoHashWithStorage(mi.HashInfoBytes(), nil)
+	torrent.Drop()
 
 	return mi.HashInfoBytes().String(), nil
 }

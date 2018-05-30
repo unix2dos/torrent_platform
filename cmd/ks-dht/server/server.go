@@ -13,12 +13,12 @@ type Server struct {
 func (s *Server) Run(addr string) {
 
 	go func() {
-		s.DHT.Start()
+		r := gin.Default()
+		s.Route(r)
+		r.Run(addr)
 	}()
 
-	r := gin.New()
-	s.Route(r)
-	r.Run(addr)
+	s.DHT.Start()
 }
 
 func (s *Server) Route(r *gin.Engine) {

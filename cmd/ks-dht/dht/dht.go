@@ -84,6 +84,7 @@ func (d *DHT) Start() {
 		ch := make(chan os.Signal)
 		signal.Notify(ch)
 		<-ch
+		signal.Stop(ch)
 		cancel()
 	}()
 
@@ -115,12 +116,10 @@ func (d *DHT) loadTable() (err error) {
 	// 	}
 	// }
 	// log.Printf("loaded %d nodes from table file", added)
-
 	return
 }
 
 func (d *DHT) saveTable() (err error) {
-
 	// nodes := d.server.Nodes()
 	// b, err := krpc.CompactIPv6NodeInfo(nodes).MarshalBinary()
 	// if err != nil {

@@ -1,10 +1,10 @@
 package server
 
 import (
-	"github.com/gin-gonic/gin"
-
 	"torrent_platform/cmd/ks-platform/client"
 	"torrent_platform/cmd/ks-platform/engine"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
@@ -18,7 +18,7 @@ func (s *Server) Run(addr string) {
 
 	s.client = client.New()
 
-	r := gin.New()
+	r := gin.Default()
 	s.Route(r)
 	r.Run(addr)
 }

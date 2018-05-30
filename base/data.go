@@ -13,10 +13,6 @@ var (
 	GlobalBootstrapAddrs = []string{"172.24.120.28:16181"}
 )
 
-type Hash struct {
-	Hash string `json:"hash"`
-}
-
 func BootstrapAddrs() (addrs []dht.Addr, err error) {
 	for _, s := range GlobalBootstrapAddrs {
 		host, port, err := net.SplitHostPort(s)

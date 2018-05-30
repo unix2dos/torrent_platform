@@ -1,4 +1,4 @@
-package main
+package engine
 
 import (
 	"log"
@@ -7,50 +7,7 @@ import (
 
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
-
-	"torrent_platform/base"
 )
-
-func FileSeed(path string) (infohash string, err error) {
-
-	mi, err := GenerateMetaInfo(path)
-	if err != nil {
-		return "", err
-	}
-
-	// check infohash is exist
-	_, new := torrentClient.AddTorrentInfoHashWithStorage(mi.HashInfoBytes(), nil)
-	if !new {
-		return "", base.ErrTorrentAlreadyExist
-	}
-
-	// add torrent
-	tTorrent, err := torrentClient.AddTorrent(mi)
-	if err != nil {
-		return "", err
-	}
-
-	tTorrent.Info().Name = path
-	go func() {
-		<-tTorrent.GotInfo()
-		tTorrent.DownloadAll()
-	}()
-
-	return mi.HashInfoBytes().String(), nil
-}
-
-func CancelFileSeed(path string) (infohash string, err error) {
-
-	mi, err := GenerateMetaInfo(path) //TODO: 通过其他办法获取torrent
-	if err != nil {
-		return "", err
-	}
-
-	torrent, _ := torrentClient.AddTorrentInfoHashWithStorage(mi.HashInfoBytes(), nil)
-	torrent.Drop()
-
-	return mi.HashInfoBytes().String(), nil
-}
 
 func GenerateMetaInfo(dir string) (mi *metainfo.MetaInfo, err error) {
 

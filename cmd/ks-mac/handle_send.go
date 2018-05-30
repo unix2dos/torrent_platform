@@ -35,12 +35,13 @@ func DelFileSeed(path string) error {
 	}
 
 	// cancel file seed
-	_, err = CancelFileSeed(path)
+	infohash, err := CancelFileSeed(path)
 	if err != nil {
 		return err
 	}
 
 	// del hash TODO:要不要删除, 因为别人有可能也在做种
+	DelHash(infohash)
 
 	log.Println("ks-mac DelFileSeed", path)
 	return nil

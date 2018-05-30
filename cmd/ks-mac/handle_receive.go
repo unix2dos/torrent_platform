@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,15 +13,18 @@ type Path struct {
 func HandlerReceive() {
 
 	router := gin.New()
-	router.GET("/", handlerDebugInfo)
-	router.PUT("/addPath", handlerAddPath)
-	router.DELETE("/delPath", handlerDelPath)
-	router.Run(httpAddr)
 
+	router.GET("/", handlerDebugInfo)
+	path := router.Group("/path/v1")
+	{
+		path.PUT("/add", handlerAddPath)
+		path.DELETE("/del", handlerDelPath)
+	}
+
+	router.Run(httpAddr)
 }
 
 func handlerDebugInfo(c *gin.Context) {
-
 	torrentClient.WriteStatus(c.Writer)
 }
 
@@ -31,8 +36,11 @@ func handlerAddPath(c *gin.Context) {
 		return
 	}
 
-	c.String(200, "path:%s \nerr=%v\n", res.Path, err)
-	AddFileSeed(res.Path)
+	err = AddFileSeed(res.Path)
+	c.JSON(200, gin.H{
+		"err":  fmt.Sprintf("%v", err),
+		"path": res.Path,
+	})
 
 }
 
@@ -43,6 +51,10 @@ func handlerDelPath(c *gin.Context) {
 		return
 	}
 
-	c.String(200, "path:%s \nerr=%v\n", res.Path, err)
-	DelFileSeed(res.Path)
+	err = DelFileSeed(res.Path)
+
+	c.JSON(200, gin.H{
+		"err":  fmt.Sprintf("%v", err),
+		"path": res.Path,
+	})
 }

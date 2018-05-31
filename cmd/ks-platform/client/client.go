@@ -7,10 +7,6 @@ import (
 	"torrent_platform/base"
 )
 
-type Hash struct {
-	Hash string `json:"hash" binding:"required"`
-}
-
 type Client struct {
 	*base.Client
 }
@@ -21,7 +17,7 @@ func New() *Client {
 
 func (c *Client) AddHash(hash string) error {
 
-	h := Hash{Hash: hash}
+	h := HashArgs{Hash: hash}
 	buf, err := json.Marshal(h)
 	if err != nil {
 		return err
@@ -32,7 +28,7 @@ func (c *Client) AddHash(hash string) error {
 
 func (c *Client) DelHash(hash string) error {
 
-	h := Hash{Hash: hash}
+	h := HashArgs{Hash: hash}
 	buf, err := json.Marshal(h)
 	if err != nil {
 		return err

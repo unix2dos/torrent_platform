@@ -12,7 +12,8 @@ type Client struct {
 }
 
 func New() *Client {
-	return &Client{base.NewClient()}
+	return &Client{base.NewClient("207.246.80.69:26180")}
+	// return &Client{base.NewClient("172.24.120.28:26180")}
 }
 
 func (c *Client) AddHash(hash string) error {

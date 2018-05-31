@@ -13,10 +13,7 @@ type Client struct {
 	client *http.Client
 }
 
-func NewClient() *Client {
-
-	addr := "172.24.120.28:26180"
-
+func NewClient(addr string) *Client {
 	s := &Client{
 		addr: addr,
 	}

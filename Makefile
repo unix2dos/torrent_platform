@@ -6,7 +6,7 @@ PRE := ks
 ROOF := $(NAME)
 
 
-all: clean dht mac download
+all: clean dht platform download
 
 
 clean:
@@ -22,11 +22,11 @@ dht:
 	#mkdir -p dist/darwin_amd64 && GOOS=darwin GOARCH=amd64 go build -o dist/darwin_amd64/$(PRE)-$@ $(ROOF)/cmd/$(PRE)-$@
 .PHONY: dht
 
-mac:
+platform:
 	echo "Building $@"
 	mkdir -p dist/linux_amd64 && GOOS=linux GOARCH=amd64 go build -o dist/linux_amd64/$(PRE)-$@ $(ROOF)/cmd/$(PRE)-$@
 	#mkdir -p dist/darwin_amd64 && GOOS=darwin GOARCH=amd64 go build  -o dist/darwin_amd64/$(PRE)-$@ $(ROOF)/cmd/$(PRE)-$@
-.PHONY: mac
+.PHONY: platform
 
 
 download:

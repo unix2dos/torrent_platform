@@ -50,7 +50,7 @@ func (e *Engine) AddFileSeed(path string) (infohash string, err error) {
 	//check exist
 	t, ok := e.client.Torrent(mi.HashInfoBytes())
 	if ok {
-		return infohash, base.ErrTorrentAlreadyExist
+		return infohash, nil
 	}
 
 	t, err = e.client.AddTorrent(mi)
@@ -81,5 +81,14 @@ func (e *Engine) DelFileSeed(path string) (infohash string, err error) {
 		t.Drop()
 	}
 
+	return
+}
+
+func (e *Engine) ListFileSeed() (res []string) {
+
+	torrents := e.client.Torrents()
+	for _, v := range torrents {
+		res = append(res, v.Name())
+	}
 	return
 }

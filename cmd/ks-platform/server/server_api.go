@@ -36,7 +36,7 @@ func (s *Server) handleAddPath(c *gin.Context) {
 
 	err = s.client.AddHash(infohash)
 	if err != nil {
-		c.JSON(503, gin.H{"status": 1, "error": "系统错误"})
+		c.JSON(500, gin.H{"status": 1, "error": "系统错误"})
 		return
 	}
 
@@ -66,7 +66,7 @@ func (s *Server) handleDelPath(c *gin.Context) {
 
 	err = s.client.DelHash(infohash)
 	if err != nil {
-		c.JSON(503, gin.H{"status": 1, "error": "系统错误"})
+		c.JSON(500, gin.H{"status": 1, "error": "系统错误"})
 		return
 	}
 
@@ -75,6 +75,6 @@ func (s *Server) handleDelPath(c *gin.Context) {
 
 func (s *Server) handleListPath(c *gin.Context) {
 
-	//TODO: list path
-	response.DataJSON(c, nil, 0)
+	list := s.engine.ListFileSeed()
+	response.DataJSON(c, list, len(list))
 }

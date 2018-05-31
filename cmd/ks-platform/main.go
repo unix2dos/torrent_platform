@@ -12,6 +12,7 @@ var (
 )
 
 func init() {
+
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	flag.StringVar(&httpAddr, "httpAddr", ":16180", "http addr")

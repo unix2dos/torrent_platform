@@ -1,10 +1,12 @@
 package server
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/gin-gonic/gin"
+
+	"fhyx/kinema/pkg/web/response"
+	"torrent_platform/base"
 )
 
 func (s *Server) handleDebugInfo(c *gin.Context) {
@@ -16,28 +18,29 @@ func (s *Server) handleAddPath(c *gin.Context) {
 	var args PathArgs
 	err := c.Bind(&args)
 	if err != nil {
+		response.Resp400JSON(c, base.ErrParamType, err)
 		return
 	}
 
 	_, err = os.Stat(args.Path)
 	if err != nil {
-		c.AbortWithStatusJSON(400, gin.H{"msg": "path not exist", "ret": "1"})
+		response.BadReqJSON(c, base.ErrorPathNotExist)
 		return
 	}
 
-	msg := "ok"
 	infohash, err := s.engine.AddFileSeed(args.Path)
 	if err != nil {
-		msg = fmt.Sprintf("%v", err)
+		response.BadReqJSON(c, err)
+		return
 	}
 
 	err = s.client.AddHash(infohash)
 	if err != nil {
-		msg = fmt.Sprintf("%v", err)
+		c.JSON(503, gin.H{"status": 1, "error": "系统错误"})
+		return
 	}
 
-	c.JSON(200, gin.H{"msg": msg, "ret": "0"})
-
+	response.SuccessJSON(c)
 }
 
 func (s *Server) handleDelPath(c *gin.Context) {
@@ -45,31 +48,33 @@ func (s *Server) handleDelPath(c *gin.Context) {
 	var args PathArgs
 	err := c.Bind(&args)
 	if err != nil {
+		response.Resp400JSON(c, base.ErrParamType, err)
 		return
 	}
 
 	_, err = os.Stat(args.Path)
 	if err != nil {
-		c.AbortWithStatusJSON(400, gin.H{"msg": "path not exist", "ret": "1"})
+		response.BadReqJSON(c, base.ErrorPathNotExist)
 		return
 	}
 
-	msg := "ok"
 	infohash, err := s.engine.DelFileSeed(args.Path)
 	if err != nil {
-		msg = fmt.Sprintf("%v", err)
+		response.BadReqJSON(c, err)
+		return
 	}
 
-	err = s.client.DelHash(infohash) //TODO:要不要删除, 因为别人有可能也在做种
+	err = s.client.DelHash(infohash)
 	if err != nil {
-		msg = fmt.Sprintf("%v", err)
+		c.JSON(503, gin.H{"status": 1, "error": "系统错误"})
+		return
 	}
 
-	c.JSON(200, gin.H{"msg": msg, "ret": "0"})
+	response.SuccessJSON(c)
 }
 
 func (s *Server) handleListPath(c *gin.Context) {
 
 	//TODO: list path
-	c.JSON(200, gin.H{"msg": "ok", "ret": "0"})
+	response.DataJSON(c, nil, 0)
 }

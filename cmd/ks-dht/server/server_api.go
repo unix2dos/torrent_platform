@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/gin-gonic/gin"
 
-	"torrent_platform/cmd/ks-dht/util"
+	"torrent_platform/base"
 )
 
 var (
@@ -40,7 +40,7 @@ func (s *Server) handleDelHash(c *gin.Context) {
 
 	for k, v := range hashSlice {
 		if v == args.Hash {
-			hashSlice = util.SliceRemove(hashSlice, k)
+			hashSlice = base.SliceRemove(hashSlice, k)
 			break
 		}
 	}

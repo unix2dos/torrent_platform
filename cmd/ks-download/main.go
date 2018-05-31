@@ -23,5 +23,4 @@ func main() {
 
 	server := &server.Server{}
 	server.Run(dhtDebugAddr)
-
 }

@@ -43,7 +43,6 @@ func (s *Server) Download() {
 	for _, hash := range res {
 
 		fmt.Println("-------------------------hash download", hash)
-
 		torrent, err := s.engine.AddMagnet(hash)
 		if err != nil {
 			log.Printf("add magnet error %s\n", err)

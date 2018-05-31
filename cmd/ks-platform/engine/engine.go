@@ -41,7 +41,7 @@ func (e *Engine) ShowDebug(w io.Writer) {
 
 func (e *Engine) AddFileSeed(path string) (infohash string, err error) {
 
-	mi, err := GenerateMetaInfo(path)
+	mi, err := base.GenerateMetaInfo(path)
 	if err != nil {
 		return
 	}
@@ -69,7 +69,7 @@ func (e *Engine) AddFileSeed(path string) (infohash string, err error) {
 
 func (e *Engine) DelFileSeed(path string) (infohash string, err error) {
 
-	mi, err := GenerateMetaInfo(path)
+	mi, err := base.GenerateMetaInfo(path)
 	if err != nil {
 		return
 	}

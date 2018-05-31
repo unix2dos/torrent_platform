@@ -1,4 +1,4 @@
-package engine
+package base
 
 import (
 	"log"
@@ -8,6 +8,11 @@ import (
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
 )
+
+func SliceRemove(s []string, i int) []string {
+	s[len(s)-1], s[i] = s[i], s[len(s)-1]
+	return s[:len(s)-1]
+}
 
 func GenerateMetaInfo(dir string) (mi *metainfo.MetaInfo, err error) {
 

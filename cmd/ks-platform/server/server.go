@@ -13,6 +13,7 @@ type Server struct {
 }
 
 func (s *Server) Run(addr string) {
+
 	s.engine = engine.New()
 	s.engine.Configure()
 
